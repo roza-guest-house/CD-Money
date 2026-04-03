@@ -776,9 +776,7 @@
 
     async function apiPost(payload){
       const attempts = [payload];
-      if(payload && payload.action === "upsertExpense"){
-        const { action, ...plainExpense } = payload;
-        attempts.push(plainExpense);
+      
       }
       if(payload && payload.action === "runDueRecurring"){
         attempts.push({ action:"runRecurringNow", month:payload.month });

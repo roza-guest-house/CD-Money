@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CD Money</title>
+  <style>
+    :root{
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --border:#e2e8f0;
+      --text:#0f172a;
+      --muted:#64748b;
+      --blue:#1e3a8a;
+      --blue2:#2563eb;
+      --blueSoft:#dbeafe;
+      --blueDark:#0a1f44;
+      --green:#059669;
+      --greenSoft:#ecfdf5;
+      --red:#dc2626;
+      --redSoft:#fef2f2;
+      --amber:#b45309;
+      --amberSoft:#fff7ed;
+      --fixedBg:#ccfbf1;
+      --fixedText:#115e59;
+      --flexBg:#f3e8ff;
+      --flexText:#6b21a8;
+      --shadow:0 10px 30px rgba(15,23,42,.06);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding-top:env(safe-area-inset-top)}
+    .topbar-inner{max-width:460px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:var(--shadow)}
+    .title{font-size:18px;font-weight:800;margin:0;color:var(--blueDark)}
+    .subtitle{font-size:12px;color:var(--muted);margin-top:4px}
+    .statusline{display:flex;align-items:center;gap:7px}
+    .statusdot{width:8px;height:8px;border-radius:999px;background:var(--green);display:inline-block}
+    .wrap{max-width:460px;margin:0 auto;padding:16px 16px 110px}
+    .section{display:none;opacity:0}
+    .section.active{display:block;animation:fade .22s ease forwards}
+    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:16px;box-shadow:0 1px 2px rgba(15,23,42,.03);margin-top:12px}
+    .hero{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:24px;padding:18px;box-shadow:0 14px 30px rgba(30,58,138,.18)}
+    .hero-grid{display:grid;grid-template-columns:1.4fr .8fr;gap:12px;align-items:center}
+    .hero-col .micro{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#dbeafe;margin-bottom:8px;font-weight:800}
+    .hero-col .big{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.02}
+    .hero-col .sub{font-size:12px;color:rgba(255,255,255,.86);margin-top:10px}
+    .hero-divider{width:1px;align-self:stretch;background:rgba(255,255,255,.18);justify-self:center}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .metric-card{position:relative;overflow:hidden}
+    .metric-card::after{content:"";position:absolute;inset:auto -30% -60% auto;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle, rgba(37,99,235,.08), rgba(37,99,235,0));pointer-events:none}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef4ff;color:var(--blueDark);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+    .chip.green{background:var(--greenSoft);color:#065f46}
+    .chip.amber{background:var(--amberSoft);color:#9a3412}
+    .metric-big{font-size:26px;font-weight:800;color:var(--blueDark);margin-top:10px;letter-spacing:-.02em}
+    .metric-note{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}
+    .metric-wide-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .side-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800}
+    .side-value{font-size:18px;font-weight:800;color:var(--blueDark);margin-top:6px}
+    .card-title{font-weight:800;font-size:16px;margin:0 0 10px;color:var(--blueDark)}
+    .card-note{font-size:13px;color:var(--muted);margin:0}
+    .btn,.input,.select,button,input,select,textarea{font:inherit}
+    .btn{border:none;border-radius:18px;height:50px;padding:0 14px;cursor:pointer;font-weight:800;display:flex;align-items:center;justify-content:center}
+    .btn-primary{background:var(--blue);color:#fff}
+    .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
+    .btn-danger{background:#fff;color:var(--red);border:1px solid #fecaca}
+    .btn-ai{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+    .btn[disabled]{opacity:.72;cursor:not-allowed}
+    .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .stack > * + *{margin-top:12px}
+    .input,.select,.textarea{width:100%;border-radius:18px;border:1px solid var(--border);padding:0 14px;background:#fff;height:50px}
+    .textarea{min-height:110px;height:auto;padding:14px;resize:vertical}
+    .input-lg{height:60px;font-size:24px;font-weight:800;text-align:center}
+    .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px var(--blueSoft)}
+    .label2{font-size:13px;font-weight:800;margin:0 0 8px;color:var(--blueDark)}
+    .small{font-size:12px}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+    .pill-fixed{background:var(--fixedBg);color:var(--fixedText)}
+    .pill-flex{background:var(--flexBg);color:var(--flexText)}
+    .expense{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border:1px solid var(--border);border-radius:18px;padding:12px;margin-top:10px;background:#fff}
+    .expense .name{font-weight:700}
+    .expense .meta{font-size:12px;color:var(--muted);margin-top:4px}
+    .expense .amount{font-weight:800}
+    .expense-actions{display:flex;gap:10px;margin-top:8px;justify-content:flex-end}
+    .linkbtn{border:none;background:none;color:var(--blue2);cursor:pointer;font-size:12px;padding:0;font-weight:700}
+    .danger{color:var(--red)}
+    .empty{padding:18px;text-align:center;font-size:14px;color:var(--muted);border:1px dashed var(--border);border-radius:18px}
+    .tip{background:#f8fafc;border-radius:16px;padding:12px;font-size:14px;color:#334155;margin-top:10px;line-height:1.45}
+    .bar-wrap{margin-top:12px}
+    .bar-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;gap:10px}
+    .bar{width:100%;height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .bar > div{height:100%;background:var(--blue);border-radius:999px}
+    .roll-pos{color:var(--green)!important;font-weight:800}
+    .roll-neg{color:var(--red)!important;font-weight:800}
+    .roll-zero{color:var(--muted)!important;font-weight:800}
+    .cat-group{margin-top:10px}
+    .cat-group-title{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
+    .cat-grid{display:flex;flex-wrap:wrap;gap:8px}
+    .cat-btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 12px;border-radius:14px;cursor:pointer;font-size:13px;font-weight:700}
+    .cat-btn.active-fixed{background:var(--fixedBg);border-color:#99f6e4;color:#115e59}
+    .cat-btn.active-flex{background:var(--flexBg);border-color:#e9d5ff;color:#6b21a8}
+    .flex-row{border:1px solid var(--border);border-radius:18px;padding:14px;margin-top:10px;background:#fff}
+    .flex-row-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .flex-row-name{font-weight:800;color:var(--blueDark)}
+    .flex-row-meta{font-size:12px;color:var(--muted);margin-top:4px}
+    .flex-actions{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin-top:12px}
+    .table-compact{width:100%;border-collapse:collapse}
+    .table-compact th,.table-compact td{padding:10px 8px;border-bottom:1px solid var(--border);font-size:13px;text-align:left}
+    .table-compact th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+    .table-compact td:last-child,.table-compact th:last-child{text-align:right}
+    .ai-bubble{background:var(--blueSoft);color:var(--blueDark);border-radius:18px;padding:14px;border-left:5px solid var(--blue2);margin-top:10px;font-size:14px;line-height:1.45;font-weight:600}
+    .nav{position:fixed;left:0;right:0;bottom:0;z-index:30;border-top:1px solid var(--border);background:rgba(255,255,255,.95);backdrop-filter:blur(12px);padding-bottom:env(safe-area-inset-bottom)}
+    .nav-inner{max-width:460px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:8px}
+    .navbtn{height:56px;border:none;background:none;border-radius:16px;cursor:pointer;font-size:10px;line-height:1.05;color:var(--muted);font-weight:800;padding:4px 2px}
+    .navbtn.active{background:var(--blueSoft);color:var(--blueDark)}
+    @media (max-width:420px){
+      .hero-grid{grid-template-columns:1fr}
+      .hero-divider{display:none}
+      .flex-actions{grid-template-columns:1fr 1fr;grid-template-areas:"input input" "save clear"}
+      .flex-actions .budget-input-wrap{grid-area:input}
+      .flex-actions .save-btn{grid-area:save}
+      .flex-actions .clear-btn{grid-area:clear}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <div class="title" id="screenTitle">CD Money</div>
+        <div class="subtitle">
+          <span class="statusline">
+            <span class="statusdot" id="syncDot"></span>
+            <span id="syncText">Connecting...</span>
+          </span>
+        </div>
+      </div>
+      <div class="logo">CD</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section id="home" class="section active">
+      <div class="hero">
+        <div class="hero-grid">
+          <div class="hero-col">
+            <div class="micro">This month spend</div>
+            <div class="big" id="heroAmount">£0.00</div>
+            <div class="sub" id="heroMonth">Current month • includes all spending</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-col">
+            <div class="micro">Fixed costs</div>
+            <div class="big" style="font-size:26px" id="heroFixedCosts">£0.00</div>
+            <div class="sub">Based on your rules</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card metric-card">
+          <div class="chip">Flexible budget</div>
+          <div class="metric-big" id="budgetCardValue">£0.00</div>
+          <div class="metric-note" id="budgetCardNote">Master / allocated / reserve</div>
+        </div>
+        <div class="card metric-card">
+          <div class="chip green">Flexible today</div>
+          <div class="metric-big" id="flexToday">£0.00</div>
+          <div class="metric-note" id="flexTodayNote">Only today’s flexible spend</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card metric-card">
+          <div class="chip">Flexible total</div>
+          <div class="metric-big" id="flexTotal">£0.00</div>
+          <div class="metric-note">This month flexible spend</div>
+        </div>
+        <div class="card metric-card">
+          <div class="chip">Average so far</div>
+          <div class="metric-big" id="flexAvgSoFar">£0.00</div>
+          <div class="metric-note" id="flexAvgSoFarNote">Based on elapsed days</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-wide-inner">
+          <div>
+            <div class="chip amber">Daily left</div>
+            <div class="metric-big" id="dailyLeft">£0.00</div>
+            <div class="metric-note" id="dailyLeftNote">Based on remaining days</div>
+          </div>
+          <div>
+            <div class="side-label">Projected month-end</div>
+            <div class="side-value" id="forecastText">£0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Flexible breakdown</div>
+        <div id="homeFlexBreakdown"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Savings opportunities</div>
+        <div id="homeTips"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Latest expenses</div>
+        <div id="latestExpenses"></div>
+      </div>
+    </section>
+
+    <section id="add" class="section">
+      <div class="card">
+        <div class="card-title" id="addTitle">Quick add expense</div>
+        <div class="card-note">Amount, category, note. Date saves automatically.</div>
+        <div class="stack" style="margin-top:16px">
+          <div>
+            <div class="label2">Amount (£)</div>
+            <input id="amountInput" class="input input-lg" inputmode="decimal" placeholder="0.00" />
+          </div>
+
+          <div>
+            <div class="label2">Category</div>
+            <input id="categoryInput" type="hidden" value="Food" />
+            <div id="categoryPicker"></div>
+            <div class="small muted" id="categoryTypeNote" style="margin-top:8px">This item will count as flexible spend.</div>
+          </div>
+
+          <div>
+            <div class="label2">Note</div>
+            <input id="noteInput" class="input" placeholder="Tesco, Uber, coffee..." />
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="clearExpenseForm()">Clear</button>
+            <button class="btn btn-primary" id="saveExpenseBtn" onclick="saveExpense()">Save</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="history" class="section">
+      <div class="card">
+        <div class="stack">
+          <input id="searchInput" class="input" placeholder="Search note or category" oninput="renderAll()" />
+          <select id="monthSelect" class="select" onchange="changeMonth(this.value)"></select>
+        </div>
+      </div>
+      <div id="historyList"></div>
+    </section>
+
+    <section id="reports" class="section">
+      <div class="card">
+        <div class="label2">Base month</div>
+        <select id="reportsMonthSelect" class="select" onchange="changeMonth(this.value)"></select>
+
+        <div class="label2" style="margin-top:12px">Compare mode</div>
+        <select id="compareMode" class="select" onchange="renderAll()">
+          <option value="previous">Selected vs previous month</option>
+          <option value="same_last_year">Selected vs same month last year</option>
+          <option value="custom">Compare any two months</option>
+          <option value="last_3">Last 3 months vs previous 3 months</option>
+          <option value="last_6">Last 6 months vs previous 6 months</option>
+        </select>
+
+        <div id="customCompareWrap" style="display:none;margin-top:12px">
+          <div class="label2">Compare against</div>
+          <select id="compareMonthSelect" class="select" onchange="renderAll()"></select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="small muted">All-in spend</div>
+          <div class="metric-big" id="reportTotal">£0.00</div>
+          <div class="small muted" id="reportMonthLabel">Current month</div>
+        </div>
+        <div class="card">
+          <div class="small muted">Flexible left</div>
+          <div class="metric-big" id="reportBudgetLeft">£0.00</div>
+          <div class="small muted" id="reportBudgetLeftNote">Against master flex</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="small muted">Fixed spend</div>
+          <div class="metric-big" id="reportFixed">£0.00</div>
+        </div>
+        <div class="card">
+          <div class="small muted">Flexible spend</div>
+          <div class="metric-big" id="reportFlexible">£0.00</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="small muted">Flexible / day</div>
+          <div class="metric-big" id="reportFlexibleDaily">£0.00</div>
+        </div>
+        <div class="card">
+          <div class="small muted">All-in / day</div>
+          <div class="metric-big" id="reportAllDaily">£0.00</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Comparison</div>
+        <div class="grid-2">
+          <div>
+            <div class="small muted">Current period</div>
+            <div style="font-size:20px;font-weight:800;margin-top:6px;color:var(--blueDark)" id="compareCurrentLabel">—</div>
+            <div class="small muted" id="compareCurrentTotal">All-in £0.00</div>
+            <div class="small muted" id="compareCurrentFlexible">Flexible £0.00</div>
+          </div>
+          <div>
+            <div class="small muted">Compared period</div>
+            <div style="font-size:20px;font-weight:800;margin-top:6px;color:var(--blueDark)" id="compareOtherLabel">—</div>
+            <div class="small muted" id="compareOtherTotal">All-in £0.00</div>
+            <div class="small muted" id="compareOtherFlexible">Flexible £0.00</div>
+          </div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-head"><span>All-in delta</span><span id="compareAllDelta">£0.00</span></div>
+          <div class="bar-head"><span>Flexible delta</span><span id="compareFlexDelta">£0.00</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Category breakdown</div>
+        <div id="reportCategoryBreakdown"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Split budget performance</div>
+        <div id="reportSplitBudget"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Notable spend</div>
+        <div id="reportTopItems"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Repeated spend patterns</div>
+        <div id="reportRepeatedItems"></div>
+      </div>
+    </section>
+
+    <section id="more" class="section">
+      <div class="card" onclick="showScreen('savings')" style="cursor:pointer">
+        <div class="card-title">Savings opportunities</div>
+        <div class="card-note">See where money is leaking and where to cut first.</div>
+      </div>
+      <div class="card" onclick="showScreen('income')" style="cursor:pointer">
+        <div class="card-title">Income & savings</div>
+        <div class="card-note">Enter monthly income and see savings in £ and %.</div>
+      </div>
+      <div class="card" onclick="showScreen('rules')" style="cursor:pointer">
+        <div class="card-title">Category rules</div>
+        <div class="card-note">Choose what counts as fixed and flexible.</div>
+      </div>
+      <div class="card" onclick="showScreen('recurring')" style="cursor:pointer">
+        <div class="card-title">Recurring monthly expenses</div>
+        <div class="card-note">Save recurring bills and post due ones cleanly.</div>
+      </div>
+      <div class="card" onclick="showScreen('budgets')" style="cursor:pointer">
+        <div class="card-title">Flexible budget</div>
+        <div class="card-note">Set the master flex and split it by category.</div>
+      </div>
+      <div class="card" onclick="showScreen('backup')" style="cursor:pointer">
+        <div class="card-title">Backup & restore</div>
+        <div class="card-note">Export and import local backup JSON.</div>
+      </div>
+      <div class="card" onclick="showScreen('ai')" style="cursor:pointer">
+        <div class="card-title">AI insights</div>
+        <div class="card-note">Gemini-powered spending analysis.</div>
+      </div>
+    </section>
+
+    <section id="savings" class="section">
+      <div class="card">
+        <div class="card-title">Savings opportunities</div>
+        <div id="savingsTips"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="small muted">Flexible vs budget</div>
+          <div class="metric-big" id="savingsFlexSpend">£0.00</div>
+          <div class="small muted" id="savingsFlexMeta">Budget £0.00</div>
+          <div class="small muted" id="savingsFlexPct" style="margin-top:6px">0% used</div>
+        </div>
+        <div class="card">
+          <div class="small muted">Income</div>
+          <div class="metric-big" id="savingsIncome">£0.00</div>
+          <div class="small muted" id="savingsSavedPct">0% savings rate</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Top flexible categories</div>
+        <div id="savingsCategoryBreakdown"></div>
+      </div>
+    </section>
+
+    <section id="income" class="section">
+      <div class="card">
+        <div class="card-title">Monthly income</div>
+        <div class="stack" style="margin-top:16px">
+          <div>
+            <div class="label2">Month</div>
+            <select id="incomeMonthSelect" class="select" onchange="renderIncomeScreen()"></select>
+          </div>
+          <div>
+            <div class="label2">Income (£)</div>
+            <input id="incomeInput" class="input" inputmode="decimal" placeholder="0.00" />
+          </div>
+          <div>
+            <button class="btn btn-primary" id="saveIncomeBtn" style="width:100%" onclick="saveIncomeNow()">Save income</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="small muted">Total spent</div>
+          <div class="metric-big" id="incomeSpent">£0.00</div>
+          <div class="small muted" id="incomeSpentPct">0% of income</div>
+        </div>
+        <div class="card">
+          <div class="small muted">Saved</div>
+          <div class="metric-big" id="incomeSaved">£0.00</div>
+          <div class="small muted" id="incomeSavedPct">0% savings rate</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="small muted">Fixed costs</div>
+          <div class="metric-big" id="incomeFixed">£0.00</div>
+          <div class="small muted" id="incomeFixedPct">0% of income</div>
+        </div>
+        <div class="card">
+          <div class="small muted">Flexible spend</div>
+          <div class="metric-big" id="incomeFlexible">£0.00</div>
+          <div class="small muted" id="incomeFlexiblePct">0% of income</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Quick read</div>
+        <div id="incomeTips"></div>
+      </div>
+    </section>
+
+    <section id="rules" class="section">
+      <div class="card">
+        <div class="card-title">Category rules</div>
+        <div class="card-note">Fixed costs do not consume flexible budgets or daily control. Flexible categories do.</div>
+      </div>
+      <div id="rulesList"></div>
+    </section>
+
+    <section id="recurring" class="section">
+      <div class="card">
+        <div class="card-title">Add recurring monthly expense</div>
+        <div class="stack" style="margin-top:16px">
+          <div>
+            <div class="label2">Title</div>
+            <input id="recTitle" class="input" placeholder="Netflix, electricity, council tax..." />
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <div class="label2">Amount (£)</div>
+              <input id="recAmount" class="input" inputmode="decimal" placeholder="0.00" />
+            </div>
+            <div>
+              <div class="label2">Day of month</div>
+              <input id="recDay" class="input" inputmode="numeric" placeholder="1-31" />
+            </div>
+          </div>
+
+          <div>
+            <div class="label2">Category</div>
+            <input id="recCategory" type="hidden" value="Bills" />
+            <div id="recCategoryPicker"></div>
+            <div class="small muted" id="recCategoryTypeNote" style="margin-top:8px">This recurring item will count as fixed cost.</div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="clearRecurringForm()">Clear</button>
+            <button class="btn btn-primary" id="saveRecurringBtn" onclick="saveRecurring()">Save recurring</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Auto-add due recurring</div>
+        <div class="card-note">Posts all active items due for the current month that have not yet been posted.</div>
+        <button class="btn btn-primary" style="width:100%;margin-top:12px" id="runRecurringBtn" onclick="runDueRecurring()">Run now</button>
+      </div>
+
+      <div id="recurringList"></div>
+    </section>
+
+    <section id="budgets" class="section">
+      <div class="card">
+        <div class="card-title">Master flexible budget</div>
+        <div class="stack" style="margin-top:16px">
+          <div>
+            <div class="label2">Flexible budget (£)</div>
+            <input id="flexBudgetInput" class="input" inputmode="decimal" placeholder="0.00" />
+          </div>
+          <div>
+            <button class="btn btn-primary" style="width:100%" id="saveFlexMasterBtn" onclick="saveMasterFlexBudget()">Save master budget</button>
+          </div>
+
+          <div class="bar-wrap">
+            <div class="bar-head"><span>Flexible spend</span><span id="masterFlexSummary">£0.00 / £0.00</span></div>
+            <div class="bar"><div id="masterFlexBar" style="width:0%"></div></div>
+          </div>
+
+          <div class="small muted" id="masterFlexNote">Master flex controls daily left and forecast.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Split flexible budgets</div>
+        <div class="card-note">Food, Travel, Household, Entertainment, and Personal are tracked separately inside your master flex.</div>
+        <div id="splitBudgetRows"></div>
+
+        <div class="grid-2">
+          <div class="card" style="margin-top:12px">
+            <div class="small muted">Allocated total</div>
+            <div class="metric-big" id="allocatedTotal">£0.00</div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <div class="small muted">Reserve left</div>
+            <div class="metric-big" id="reserveLeft">£0.00</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="backup" class="section">
+      <div class="card">
+        <div class="card-title">Backup & restore</div>
+        <div class="card-note">Exports or restores your browser-side local copy. Cloud data still lives in Google Sheets.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Export backup</div>
+        <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="exportBackup()">Export backup</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Import backup</div>
+        <div class="stack" style="margin-top:16px">
+          <input id="backupFileInput" class="input" type="file" accept="application/json,.json" />
+          <button class="btn btn-primary" onclick="importBackup()">Import backup</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="ai" class="section">
+      <div class="card">
+        <div class="card-title">✨ AI insights</div>
+        <div class="card-note">Local structured breakdown first, then Gemini analysis.</div>
+        <button class="btn btn-ai" style="width:100%;margin-top:14px" onclick="renderAIInsights()">Analyze spending</button>
+        <div id="aiInsights"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <button class="navbtn active" data-screen="home" onclick="showScreen('home')">Home</button>
+      <button class="navbtn" data-screen="add" onclick="showScreen('add')">Add</button>
+      <button class="navbtn" data-screen="history" onclick="showScreen('history')">History</button>
+      <button class="navbtn" data-screen="reports" onclick="showScreen('reports')">Reports</button>
+      <button class="navbtn" data-screen="more" onclick="showScreen('more')">More</button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyOpxYZRSqQaICAI6UxLI81gywOSBjjwX0Z9pUVbwXLj8lVgn4RZipj5SyxKWo-RbYAiQ/exec";
+    const STORAGE_KEY = "cd_money_v31_improvements";
+    const CATEGORIES = ["Rent","Bills","Subscriptions","Food","Travel","Entertainment","Household","Personal","Gifts","Holiday"];
+    const TRACKED_FLEX_CATEGORIES = ["Food","Travel","Household","Entertainment","Personal"];
+    const DEFAULT_RULES = {
+      Rent:"fixed",
+      Bills:"fixed",
+      Subscriptions:"fixed",
+      Food:"flexible",
+      Travel:"flexible",
+      Entertainment:"flexible",
+      Household:"flexible",
+      Personal:"flexible",
+      Gifts:"flexible",
+      Holiday:"flexible"
+    };
+
+    let app = loadState();
+    let currentScreen = "home";
+    let editingExpenseId = null;
+    let syncState = { text:"Connecting...", color:"var(--green)" };
+    let writeLock = false;
+
+    function loadState(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if(saved && typeof saved === "object"){
+          return normalizeState(saved);
+        }
+      }catch(e){}
+      return normalizeState({});
+    }
+
+    function normalizeState(state){
+      return {
+        expenses: Array.isArray(state.expenses) ? state.expenses : [],
+        recurring: Array.isArray(state.recurring) ? state.recurring : [],
+        rules: { ...DEFAULT_RULES, ...(state.rules || {}) },
+        budgets: typeof state.budgets === "object" && state.budgets ? state.budgets : {},
+        flexBudgets: typeof state.flexBudgets === "object" && state.flexBudgets ? state.flexBudgets : {},
+        selectedMonth: state.selectedMonth || currentMonthKey()
+      };
+    }
+
+    function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(app)); }
+    function setSyncState(text, color){ syncState = { text, color }; renderSyncState(); }
+    function renderSyncState(){ const dot = document.getElementById("syncDot"); const text = document.getElementById("syncText"); if(dot) dot.style.background = syncState.color; if(text) text.textContent = syncState.text; }
+    function formatMoney(v){ return new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(Number(v || 0)); }
+    function cleanString(v){ return String(v == null ? "" : v).trim(); }
+    function toNumber(v){ const n = Number(v); return Number.isFinite(n) ? n : 0; }
+    function currentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
+    function monthKey(dateString){
+      if(typeof dateString === "string" && /^\d{4}-\d{2}$/.test(dateString)) return dateString;
+      const d = new Date(dateString);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+    }
+    function prettyMonth(key){ const [y,m] = key.split("-").map(Number); return new Date(y, m - 1, 1).toLocaleDateString("en-GB",{month:"long",year:"numeric"}); }
+    function addMonthsToKey(key, delta){ const [y,m] = key.split("-").map(Number); const d = new Date(y, m - 1 + delta, 1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
+    function generateId(prefix="id"){ return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2,10)}`; }
+    function isFixed(category){ return (app.rules[category] || DEFAULT_RULES[category] || "flexible") === "fixed"; }
+    function activeMonth(){ return app.selectedMonth === "all" ? currentMonthKey() : app.selectedMonth; }
+    function monthBudget(month){ return toNumber((app.budgets[month] || {}).flex); }
+    function monthIncome(month){ return toNumber((app.budgets[month] || {}).income); }
+    function flexCategoryBudget(month, category){ return toNumber(((app.flexBudgets[month] || {})[category]) || 0); }
+    function percent(part, whole){ if(!whole) return 0; return (Number(part) / Number(whole)) * 100; }
+    function escapeHtml(str){ return String(str || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+    function formatExpenseDate(iso){ const d = new Date(iso); return d.toLocaleString("en-GB",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}); }
+    function itemsForMonth(month){ return app.expenses.filter(x => monthKey(x.date) === month); }
+    function itemsForMonths(months){ const set = new Set(months); return app.expenses.filter(x => set.has(monthKey(x.date))); }
+    function totals(items){ return items.reduce((acc,item)=>{ const amount = toNumber(item.amount); acc.total += amount; if(isFixed(item.category)) acc.fixed += amount; else acc.flexible += amount; return acc; },{total:0,fixed:0,flexible:0}); }
+    function categoryTotals(items){ const grouped = {}; items.forEach(item => { grouped[item.category] = (grouped[item.category] || 0) + toNumber(item.amount); }); return Object.entries(grouped).map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value); }
+    function itemisedFlexibleSpend(items){ const grouped = {}; items.filter(x => !isFixed(x.category)).forEach(item => { const key = cleanString(item.note || item.category || "Unknown"); if(!grouped[key]) grouped[key] = { name:key, total:0, count:0, category:item.category }; grouped[key].total += toNumber(item.amount); grouped[key].count += 1; }); return Object.values(grouped).map(x => ({ ...x, avg: x.count ? x.total / x.count : 0 })).sort((a,b) => b.total - a.total); }
+    function noteInsightRows(items){
+      return itemisedFlexibleSpend(items).map(x => ({
+        note: x.name,
+        category: x.category,
+        total: x.total,
+        count: x.count,
+        avg: x.avg
+      }));
+    }
+    function allKnownMonths(){ const expenseMonths = app.expenses.map(x => monthKey(x.date)); const budgetMonths = Object.keys(app.budgets || {}); const flexBudgetMonths = Object.keys(app.flexBudgets || {}); const months = [...new Set([...expenseMonths, ...budgetMonths, ...flexBudgetMonths])].sort(); return months.length ? months : [currentMonthKey()]; }
+    function elapsedDaysForMonth(month){ const [y,m] = month.split("-").map(Number); const now = new Date(); if(now.getFullYear() === y && now.getMonth() + 1 === m){ return now.getDate(); } return new Date(y, m, 0).getDate(); }
+    function totalDaysInMonth(month){ const [y,m] = month.split("-").map(Number); return new Date(y, m, 0).getDate(); }
+    function remainingDaysInMonth(month){ const [y,m] = month.split("-").map(Number); const now = new Date(); if(now.getFullYear() === y && now.getMonth() + 1 === m){ return Math.max(totalDaysInMonth(month) - now.getDate() + 1, 1); } const firstOfTarget = new Date(y, m - 1, 1).getTime(); const firstOfCurrent = new Date(now.getFullYear(), now.getMonth(), 1).getTime(); if(firstOfTarget > firstOfCurrent) return totalDaysInMonth(month); return 0; }
+    function flexibleSpentToday(month, category){ const now = new Date(); const todayKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`; if(month !== currentMonthKey()) return 0; return itemsForMonth(month).filter(item => !isFixed(item.category)).filter(item => String(item.date || "").slice(0,10) === todayKey).filter(item => category ? item.category === category : true).reduce((sum,item)=>sum + toNumber(item.amount),0); }
+    function rolloverForMonth(targetMonth){ const months = allKnownMonths(); let carry = 0; for(const month of months){ const monthTotals = totals(itemsForMonth(month)); const available = monthBudget(month) + carry; const result = available - monthTotals.flexible; if(month === targetMonth){ return { incomingCarry: carry, available, flexibleSpent: monthTotals.flexible, result }; } carry = result; } return { incomingCarry: 0, available: monthBudget(targetMonth), flexibleSpent: totals(itemsForMonth(targetMonth)).flexible, result: monthBudget(targetMonth) - totals(itemsForMonth(targetMonth)).flexible }; }
+    function getTrackedFlexRows(month){ const items = itemsForMonth(month); return TRACKED_FLEX_CATEGORIES.map(category => { const budget = flexCategoryBudget(month, category); const spent = items.filter(x => !isFixed(x.category) && x.category === category).reduce((sum,x)=>sum + toNumber(x.amount),0); const left = budget - spent; return { category, budget, spent, left }; }); }
+    function filteredExpenses(){ const search = cleanString(document.getElementById("searchInput")?.value).toLowerCase(); return [...app.expenses].filter(item => app.selectedMonth === "all" ? true : monthKey(item.date) === app.selectedMonth).filter(item => `${item.category} ${item.note || ""} ${item.source || ""}`.toLowerCase().includes(search)).sort((a,b) => new Date(b.date) - new Date(a.date)); }
+
+    async function apiGet(action){
+      const urls = [
+        `${API_URL}?action=${encodeURIComponent(action)}&t=${Date.now()}`,
+        `${API_URL}?t=${Date.now()}`
+      ];
+      let lastError = null;
+      for(const url of urls){
+        try{
+          const res = await fetch(url, { method:"GET", cache:"no-store", redirect:"follow" });
+          const text = await res.text();
+          let json;
+          try { json = JSON.parse(text); } catch(e) { throw new Error("Invalid JSON response"); }
+          return json;
+        }catch(err){
+          lastError = err;
+        }
+      }
+      throw lastError || new Error("GET failed");
+    }
+
+    async function apiPost(payload){
+      const attempts = [payload];
+      if(payload && payload.action === "upsertExpense"){
+        const { action, ...plainExpense } = payload;
+        attempts.push(plainExpense);
+      }
+      if(payload && payload.action === "runDueRecurring"){
+        attempts.push({ action:"runRecurringNow", month:payload.month });
+      }
+      let lastJson = null;
+      let lastError = null;
+      for(const bodyPayload of attempts){
+        try{
+          const res = await fetch(API_URL, {
+            method:"POST",
+            headers:{ "Content-Type":"text/plain;charset=utf-8" },
+            body:JSON.stringify(bodyPayload),
+            cache:"no-store",
+            redirect:"follow"
+          });
+          const text = await res.text();
+          let json;
+          try { json = JSON.parse(text); } catch(e) { throw new Error("Invalid JSON response"); }
+          lastJson = json;
+          if(typeof json === "object" && json && json.success === false) throw new Error(json.error || "Backend error");
+          return json;
+        }catch(err){
+          lastError = err;
+        }
+      }
+      throw lastError || new Error("POST failed");
+    }
+
+    function normalizeMonthObject(source){
+      const out = {};
+      if(!source || typeof source !== "object") return out;
+      Object.entries(source).forEach(([key, value]) => {
+        const normalizedKey = monthKey(key);
+        if(value && typeof value === "object" && !Array.isArray(value)){
+          out[normalizedKey] = value;
+        }else{
+          out[normalizedKey] = value;
+        }
+      });
+      return out;
+    }
+
+    function normalizeCloudPayload(raw){
+      const cloud = raw && raw.state ? raw.state : raw;
+      const expenses = Array.isArray(cloud?.expenses) ? cloud.expenses.filter(x => x && String(x.id || "").trim() !== "DEBUG").map(x => ({ ...x, amount: toNumber(x.amount) })) : [];
+      const budgets = normalizeMonthObject(cloud?.budgets || {});
+      const flexBudgets = normalizeMonthObject(cloud?.flexBudgets || {});
+      const rules = { ...DEFAULT_RULES, ...(cloud?.rules || {}) };
+      const recurring = Array.isArray(cloud?.recurring) ? cloud.recurring : [];
+      return { expenses, budgets, flexBudgets, rules, recurring };
+    }
+
+    function applyCloudState(cloudState){
+      const normalizedCloud = normalizeCloudPayload(cloudState || {});
+      app = normalizeState({
+        ...app,
+        expenses: normalizedCloud.expenses,
+        budgets: normalizedCloud.budgets,
+        flexBudgets: normalizedCloud.flexBudgets,
+        rules: normalizedCloud.rules,
+        recurring: normalizedCloud.recurring
+      });
+      if(!app.selectedMonth) app.selectedMonth = currentMonthKey();
+      saveState();
+    }
+
+    async function syncFromCloud(){
+      try{
+        setSyncState("Syncing...", "var(--amber)");
+        const json = await apiGet("getState");
+        applyCloudState(json);
+        setSyncState("Cloud sync active", "var(--green)");
+        renderAll();
+      }catch(err){
+        console.error(err);
+        setSyncState("Offline / Sync Error", "var(--red)");
+      }
+    }
+
+    async function writeAndResync(payload, busySetter){
+      if(writeLock) return null;
+      writeLock = true;
+      if(typeof busySetter === "function") busySetter(true);
+      try{
+        setSyncState("Saving...", "var(--amber)");
+        const result = await apiPost(payload);
+        await syncFromCloud();
+        return result;
+      }catch(err){
+        console.error(err);
+        setSyncState("Sync failed", "var(--red)");
+        alert(err.message || "Save failed.");
+        throw err;
+      }finally{
+        writeLock = false;
+        if(typeof busySetter === "function") busySetter(false);
+      }
+    }
+
+    function setButtonBusy(id, busy, textBusy, textIdle){
+      const btn = document.getElementById(id);
+      if(!btn) return;
+      btn.disabled = busy;
+      btn.textContent = busy ? textBusy : textIdle;
+    }
+
+    function expenseHtml(item){
+      const fixed = isFixed(item.category);
+      const itemId = JSON.stringify(String(item.id));
+      return `<div class="expense"><div><div class="name">${escapeHtml(item.note || item.category)} <span class="pill ${fixed ? "pill-fixed" : "pill-flex"}">${fixed ? "Fixed" : "Flexible"}</span></div><div class="meta">${formatExpenseDate(item.date)} • ${escapeHtml(item.category)} • ${escapeHtml(item.source || "manual")}</div></div><div style="text-align:right"><div class="amount">${formatMoney(item.amount)}</div><div class="expense-actions"><button class="linkbtn" onclick='editExpense(${itemId})'>Edit</button><button class="linkbtn danger" onclick='deleteExpense(${itemId})'>Delete</button></div></div></div>`;
+    }
+
+    function renderMonthSelects(){
+      let months = allKnownMonths().sort().reverse();
+      if(!months.includes(app.selectedMonth) && app.selectedMonth !== "all"){ months.unshift(app.selectedMonth); }
+      const configs = [["monthSelect", true],["reportsMonthSelect", false],["compareMonthSelect", false],["incomeMonthSelect", false]];
+      configs.forEach(([id, includeAll]) => {
+        const select = document.getElementById(id);
+        if(!select) return;
+        const values = includeAll ? [...months, "all"] : months;
+        select.innerHTML = values.map(v => `<option value="${v}">${v === "all" ? "All months" : prettyMonth(v)}</option>`).join("");
+      });
+      const historySelect = document.getElementById("monthSelect");
+      const reportsSelect = document.getElementById("reportsMonthSelect");
+      const compareSelect = document.getElementById("compareMonthSelect");
+      const incomeSelect = document.getElementById("incomeMonthSelect");
+      if(historySelect) historySelect.value = app.selectedMonth;
+      if(reportsSelect) reportsSelect.value = app.selectedMonth === "all" ? months[0] : app.selectedMonth;
+      if(incomeSelect) incomeSelect.value = app.selectedMonth === "all" ? months[0] : app.selectedMonth;
+      if(compareSelect && !compareSelect.value) compareSelect.value = months[1] || months[0];
+    }
+
+    function renderCategoryPicker(containerId, hiddenInputId){
+      const container = document.getElementById(containerId);
+      const input = document.getElementById(hiddenInputId);
+      if(!container || !input) return;
+      const current = input.value;
+      const flexible = CATEGORIES.filter(c => !isFixed(c));
+      const fixed = CATEGORIES.filter(c => isFixed(c));
+      const btns = (items, mode) => items.map(cat => {
+        const active = current === cat ? (mode === "fixed" ? "active-fixed" : "active-flex") : "";
+        return `<button type="button" class="cat-btn ${active}" onclick="setCategoryValue('${hiddenInputId}','${cat}')">${cat}</button>`;
+      }).join("");
+      container.innerHTML = `<div class="cat-group"><div class="cat-group-title">Flexible</div><div class="cat-grid">${btns(flexible, "flexible")}</div></div><div class="cat-group"><div class="cat-group-title">Fixed</div><div class="cat-grid">${btns(fixed, "fixed")}</div></div>`;
+    }
+
+    function setCategoryValue(inputId, value){
+      const input = document.getElementById(inputId);
+      if(!input) return;
+      input.value = value;
+      renderCategoryPicker("categoryPicker","categoryInput");
+      renderCategoryPicker("recCategoryPicker","recCategory");
+      updateCategoryTypeNotes();
+    }
+
+    function updateCategoryTypeNotes(){
+      const expenseCategory = document.getElementById("categoryInput")?.value || "Food";
+      const recurringCategory = document.getElementById("recCategory")?.value || "Bills";
+      const expenseNote = document.getElementById("categoryTypeNote");
+      const recurringNote = document.getElementById("recCategoryTypeNote");
+      if(expenseNote){ expenseNote.textContent = `This item will count as ${isFixed(expenseCategory) ? "fixed cost" : "flexible spend"}.`; }
+      if(recurringNote){ recurringNote.textContent = `This recurring item will count as ${isFixed(recurringCategory) ? "fixed cost" : "flexible spend"}.`; }
+    }
+
+    function renderHome(){
+      const month = activeMonth();
+      const items = itemsForMonth(month);
+      const t = totals(items);
+      const roll = rolloverForMonth(month);
+      const todayFlex = flexibleSpentToday(month);
+      const elapsed = Math.max(elapsedDaysForMonth(month), 1);
+      const avgSoFar = t.flexible / elapsed;
+      const remaining = remainingDaysInMonth(month);
+      const totalDays = totalDaysInMonth(month);
+      const dailyLeft = remaining > 0 ? roll.result / remaining : 0;
+      const masterFlex = monthBudget(month);
+      const splitRows = getTrackedFlexRows(month);
+      const allocated = splitRows.reduce((sum,row)=>sum + row.budget,0);
+      const reserve = masterFlex - allocated;
+      const projectedMonthEnd = avgSoFar * totalDays;
+      const projectedVsBudget = masterFlex - projectedMonthEnd;
+
+      document.getElementById("heroAmount").textContent = formatMoney(t.total);
+      document.getElementById("heroMonth").textContent = `${prettyMonth(month)} • includes all spending`;
+      document.getElementById("heroFixedCosts").textContent = formatMoney(t.fixed);
+      document.getElementById("budgetCardValue").textContent = formatMoney(masterFlex);
+      document.getElementById("budgetCardNote").textContent = `Allocated ${formatMoney(allocated)} • Reserve ${formatMoney(reserve)}`;
+      document.getElementById("flexToday").textContent = formatMoney(todayFlex);
+      document.getElementById("flexTodayNote").textContent = month === currentMonthKey() ? "Only today’s flexible spend" : "Today metric is only live for current month";
+      document.getElementById("flexTotal").textContent = formatMoney(t.flexible);
+      document.getElementById("flexAvgSoFar").textContent = formatMoney(avgSoFar);
+      document.getElementById("flexAvgSoFarNote").textContent = `Based on ${elapsed} elapsed day${elapsed === 1 ? "" : "s"}`;
+      document.getElementById("dailyLeft").textContent = formatMoney(dailyLeft);
+      document.getElementById("dailyLeftNote").textContent = remaining > 0 ? `Based on ${remaining} day${remaining === 1 ? "" : "s"} remaining` : "No days remaining in this month";
+      document.getElementById("forecastText").innerHTML = `${formatMoney(projectedMonthEnd)}<div class="small ${projectedVsBudget > 0 ? "roll-pos" : projectedVsBudget < 0 ? "roll-neg" : "roll-zero"}" style="margin-top:4px">${projectedVsBudget >= 0 ? formatMoney(projectedVsBudget) + " under" : formatMoney(Math.abs(projectedVsBudget)) + " over"}</div>`;
+
+      document.getElementById("homeFlexBreakdown").innerHTML = `<table class="table-compact"><thead><tr><th>Category</th><th>Budget</th><th>Spent</th><th>Left</th></tr></thead><tbody>${splitRows.map(row => `<tr><td>${escapeHtml(row.category)}</td><td>${formatMoney(row.budget)}</td><td>${formatMoney(row.spent)}</td><td class="${row.left > 0 ? "roll-pos" : row.left < 0 ? "roll-neg" : "roll-zero"}">${formatMoney(row.left)}</td></tr>`).join("")}<tr><td><strong>Reserve</strong></td><td colspan="2"></td><td class="${reserve > 0 ? "roll-pos" : reserve < 0 ? "roll-neg" : "roll-zero"}">${formatMoney(reserve)}</td></tr></tbody></table>`;
+
+      const topFlexCategories = categoryTotals(items).filter(x => !isFixed(x.name));
+      const tips = [];
+      if(topFlexCategories[0]) tips.push(`${topFlexCategories[0].name} is your biggest flexible drain at ${formatMoney(topFlexCategories[0].value)}.`);
+      if(roll.result < 0) tips.push(`You are ${formatMoney(Math.abs(roll.result))} over your available flexible budget for this month.`);
+      else tips.push(`${formatMoney(roll.result)} remains from your available flexible budget this month.`);
+      if(todayFlex > 0) tips.push(`You have spent ${formatMoney(todayFlex)} flexibly today.`);
+      if(reserve > 0) tips.push(`You still have ${formatMoney(reserve)} unallocated as reserve inside your master flex.`);
+      tips.push(projectedVsBudget >= 0 ? `At your current pace, you are on track to finish about ${formatMoney(projectedVsBudget)} under budget.` : `At your current pace, you are tracking about ${formatMoney(Math.abs(projectedVsBudget))} over budget.`);
+      document.getElementById("homeTips").innerHTML = tips.length ? tips.map(t => `<div class="tip">${t}</div>`).join("") : `<div class="empty">Add your first expense.</div>`;
+
+      const latest = [...items].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+      document.getElementById("latestExpenses").innerHTML = latest.length ? latest.map(expenseHtml).join("") : `<div class="empty">No expenses yet.</div>`;
+    }
+
+    function renderHistory(){
+      const items = filteredExpenses();
+      document.getElementById("historyList").innerHTML = items.length ? items.map(expenseHtml).join("") : `<div class="card"><div class="empty">No expenses found.</div></div>`;
+    }
+
+    function getCompareData(baseMonth, mode, customMonth){
+      if(mode === "custom"){ return { currentLabel: prettyMonth(baseMonth), otherLabel: prettyMonth(customMonth), current: itemsForMonth(baseMonth), other: itemsForMonth(customMonth) }; }
+      if(mode === "same_last_year"){ const other = addMonthsToKey(baseMonth, -12); return { currentLabel: prettyMonth(baseMonth), otherLabel: prettyMonth(other), current: itemsForMonth(baseMonth), other: itemsForMonth(other) }; }
+      if(mode === "last_3" || mode === "last_6"){
+        const count = mode === "last_3" ? 3 : 6;
+        const currentMonths = Array.from({length:count}, (_,i)=>addMonthsToKey(baseMonth, -i)).reverse();
+        const otherMonths = Array.from({length:count}, (_,i)=>addMonthsToKey(baseMonth, -(count + i))).reverse();
+        return { currentLabel: `Last ${count} months`, otherLabel: `Previous ${count} months`, current: itemsForMonths(currentMonths), other: itemsForMonths(otherMonths) };
+      }
+      const previous = addMonthsToKey(baseMonth, -1);
+      return { currentLabel: prettyMonth(baseMonth), otherLabel: prettyMonth(previous), current: itemsForMonth(baseMonth), other: itemsForMonth(previous) };
+    }
+
+    function renderReports(){
+      const baseMonth = activeMonth();
+      const mode = document.getElementById("compareMode").value;
+      const customMonth = document.getElementById("compareMonthSelect").value;
+      document.getElementById("customCompareWrap").style.display = mode === "custom" ? "block" : "none";
+      const items = itemsForMonth(baseMonth);
+      const t = totals(items);
+      const roll = rolloverForMonth(baseMonth);
+      const elapsed = Math.max(elapsedDaysForMonth(baseMonth), 1);
+      const income = monthIncome(baseMonth);
+
+      document.getElementById("reportTotal").textContent = formatMoney(t.total);
+      document.getElementById("reportMonthLabel").textContent = prettyMonth(baseMonth);
+      document.getElementById("reportBudgetLeft").textContent = formatMoney(roll.result);
+      document.getElementById("reportBudgetLeftNote").textContent = `Base ${formatMoney(monthBudget(baseMonth))} ${roll.incomingCarry >= 0 ? "+ carry" : "- overspend carry"}`;
+      document.getElementById("reportFixed").textContent = formatMoney(t.fixed);
+      document.getElementById("reportFlexible").textContent = formatMoney(t.flexible);
+      document.getElementById("reportFlexibleDaily").textContent = formatMoney(t.flexible / elapsed);
+      document.getElementById("reportAllDaily").textContent = formatMoney(t.total / elapsed);
+
+      const comp = getCompareData(baseMonth, mode, customMonth);
+      const currT = totals(comp.current);
+      const otherT = totals(comp.other);
+      const allDelta = currT.total - otherT.total;
+      const flexDelta = currT.flexible - otherT.flexible;
+
+      document.getElementById("compareCurrentLabel").textContent = comp.currentLabel;
+      document.getElementById("compareCurrentTotal").textContent = `All-in ${formatMoney(currT.total)}`;
+      document.getElementById("compareCurrentFlexible").textContent = `Flexible ${formatMoney(currT.flexible)}`;
+      document.getElementById("compareOtherLabel").textContent = comp.otherLabel;
+      document.getElementById("compareOtherTotal").textContent = `All-in ${formatMoney(otherT.total)}`;
+      document.getElementById("compareOtherFlexible").textContent = `Flexible ${formatMoney(otherT.flexible)}`;
+
+      const allNode = document.getElementById("compareAllDelta");
+      const flexNode = document.getElementById("compareFlexDelta");
+      allNode.textContent = `${allDelta >= 0 ? "+" : ""}${formatMoney(allDelta)}`;
+      flexNode.textContent = `${flexDelta >= 0 ? "+" : ""}${formatMoney(flexDelta)}`;
+      allNode.className = allDelta > 0 ? "roll-neg" : allDelta < 0 ? "roll-pos" : "roll-zero";
+      flexNode.className = flexDelta > 0 ? "roll-neg" : flexDelta < 0 ? "roll-pos" : "roll-zero";
+
+      const cats = categoryTotals(items);
+      document.getElementById("reportCategoryBreakdown").innerHTML = cats.length ? cats.map(c => {
+        const max = cats[0].value || 1;
+        const shareSpend = t.total > 0 ? percent(c.value, t.total) : 0;
+        const shareIncome = income > 0 ? percent(c.value, income) : null;
+        return `<div class="bar-wrap"><div class="bar-head"><span>${escapeHtml(c.name)}</span><span>${formatMoney(c.value)} • ${shareSpend.toFixed(1)}% spend${shareIncome !== null ? ` • ${shareIncome.toFixed(1)}% income` : ""}</span></div><div class="bar"><div style="width:${percent(c.value,max)}%"></div></div></div>`;
+      }).join("") : `<div class="empty">No spend for this month.</div>`;
+
+      const splitRows = getTrackedFlexRows(baseMonth);
+      document.getElementById("reportSplitBudget").innerHTML = `<table class="table-compact"><thead><tr><th>Category</th><th>Budget</th><th>Spent</th><th>Left</th></tr></thead><tbody>${splitRows.map(row => `<tr><td>${escapeHtml(row.category)}</td><td>${formatMoney(row.budget)}</td><td>${formatMoney(row.spent)}</td><td class="${row.left > 0 ? "roll-pos" : row.left < 0 ? "roll-neg" : "roll-zero"}">${formatMoney(row.left)}</td></tr>`).join("")}</tbody></table>`;
+
+      const topItems = noteInsightRows(items).slice(0,8);
+      document.getElementById("reportTopItems").innerHTML = topItems.length ? topItems.map(x => `<div class="tip"><strong>${escapeHtml(x.note)}</strong><br>${formatMoney(x.total)} across ${x.count} purchase${x.count === 1 ? "" : "s"} • avg ${formatMoney(x.avg)} • ${escapeHtml(x.category)}</div>`).join("") : `<div class="empty">No flexible item data yet.</div>`;
+
+      const repeated = noteInsightRows(items).filter(x => x.count >= 2).slice(0,8);
+      document.getElementById("reportRepeatedItems").innerHTML = repeated.length ? repeated.map(x => `<div class="tip"><strong>${escapeHtml(x.note)}</strong><br>${x.count} times • ${formatMoney(x.total)} • ${escapeHtml(x.category)}</div>`).join("") : `<div class="empty">No repeated flexible spend found.</div>`;
+    }
+
+    function renderSavings(){
+      const month = activeMonth();
+      const items = itemsForMonth(month);
+      const t = totals(items);
+      const roll = rolloverForMonth(month);
+      const income = monthIncome(month);
+      const saved = income - t.total;
+
+      const tips = [];
+      if(roll.result < 0) tips.push(`You are ${formatMoney(Math.abs(roll.result))} over your available flexible budget.`);
+      else tips.push(`${formatMoney(roll.result)} remains from your available flexible budget.`);
+      if(income > 0) tips.push(`You have saved ${formatMoney(saved)} this month, a ${percent(saved, income).toFixed(1)}% savings rate.`);
+      else tips.push(`Add income to unlock savings amount and savings rate.`);
+      const flexCategories = categoryTotals(items).filter(c => !isFixed(c.name));
+      if(flexCategories[0]) tips.push(`${flexCategories[0].name} is the main flexible pressure point at ${formatMoney(flexCategories[0].value)}.`);
+
+      document.getElementById("savingsTips").innerHTML = tips.map(t=>`<div class="tip">${t}</div>`).join("");
+      document.getElementById("savingsFlexSpend").textContent = formatMoney(t.flexible);
+      document.getElementById("savingsFlexMeta").textContent = `Budget ${formatMoney(monthBudget(month))} • Available ${formatMoney(roll.available)}`;
+      document.getElementById("savingsFlexPct").textContent = `${percent(t.flexible, Math.max(roll.available,1)).toFixed(1)}% of available used`;
+      document.getElementById("savingsIncome").textContent = formatMoney(income);
+      document.getElementById("savingsSavedPct").textContent = income > 0 ? `${percent(saved, income).toFixed(1)}% savings rate` : `0% savings rate`;
+
+      document.getElementById("savingsCategoryBreakdown").innerHTML = flexCategories.length ? flexCategories.map(c => { const max = flexCategories[0].value || 1; return `<div class="bar-wrap"><div class="bar-head"><span>${escapeHtml(c.name)}</span><span>${formatMoney(c.value)}</span></div><div class="bar"><div style="width:${percent(c.value,max)}%"></div></div></div>`; }).join("") : `<div class="empty">No flexible category data yet.</div>`;
+    }
+
+    function renderIncomeScreen(){
+      const month = document.getElementById("incomeMonthSelect")?.value || activeMonth();
+      const items = itemsForMonth(month);
+      const t = totals(items);
+      const income = monthIncome(month);
+      const saved = income - t.total;
+
+      document.getElementById("incomeInput").value = income || "";
+      document.getElementById("incomeSpent").textContent = formatMoney(t.total);
+      document.getElementById("incomeSpentPct").textContent = income > 0 ? `${percent(t.total,income).toFixed(1)}% of income` : "Add income first";
+      document.getElementById("incomeSaved").textContent = income > 0 ? formatMoney(saved) : "£0.00";
+      document.getElementById("incomeSavedPct").textContent = income > 0 ? `${percent(saved,income).toFixed(1)}% savings rate` : "0% savings rate";
+      document.getElementById("incomeFixed").textContent = formatMoney(t.fixed);
+      document.getElementById("incomeFixedPct").textContent = income > 0 ? `${percent(t.fixed,income).toFixed(1)}% of income` : "0% of income";
+      document.getElementById("incomeFlexible").textContent = formatMoney(t.flexible);
+      document.getElementById("incomeFlexiblePct").textContent = income > 0 ? `${percent(t.flexible,income).toFixed(1)}% of income` : "0% of income";
+
+      const tips = [];
+      if(income <= 0){ tips.push(`Add income for ${prettyMonth(month)} to unlock savings calculations.`); }
+      else {
+        tips.push(`Spent ${formatMoney(t.total)} from ${formatMoney(income)} income.`);
+        tips.push(`Saved ${formatMoney(saved)} this month.`);
+        tips.push(`Fixed costs are ${percent(t.fixed,income).toFixed(1)}% of income; flexible spend is ${percent(t.flexible,income).toFixed(1)}%.`);
+      }
+      document.getElementById("incomeTips").innerHTML = tips.map(t=>`<div class="tip">${t}</div>`).join("");
+    }
+
+    function renderRules(){
+      document.getElementById("rulesList").innerHTML = CATEGORIES.map(category => {
+        const mode = isFixed(category) ? "fixed" : "flexible";
+        return `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div class="card-title" style="margin:0">${escapeHtml(category)}</div><div class="card-note">${mode === "fixed" ? "Excluded from flexible budget and daily control." : "Counts toward flexible budget and daily control."}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn ${mode === "fixed" ? "btn-primary" : "btn-secondary"}" style="height:40px;border-radius:14px" onclick="saveRule('${category}','fixed')">Fixed</button><button class="btn ${mode === "flexible" ? "btn-primary" : "btn-secondary"}" style="height:40px;border-radius:14px" onclick="saveRule('${category}','flexible')">Flexible</button></div></div></div>`;
+      }).join("");
+    }
+
+    function renderRecurring(){
+      const list = app.recurring || [];
+      document.getElementById("recurringList").innerHTML = list.length ? list.map(item => {
+        const itemId = JSON.stringify(String(item.id));
+        return `<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="card-title" style="margin:0">${escapeHtml(item.title)}</div><div class="card-note">${escapeHtml(item.category)} • day ${escapeHtml(item.dayOfMonth)} • ${escapeHtml(item.status)}</div></div><div style="text-align:right"><div style="font-weight:800;color:var(--blueDark)">${formatMoney(item.amount)}</div><div class="small muted">Last added: ${escapeHtml(item.lastAddedMonth || "none")}</div><div class="expense-actions"><button class="linkbtn danger" onclick='deleteRecurring(${itemId})'>Delete</button></div></div></div></div>`;
+      }).join("") : `<div class="card"><div class="empty">No recurring items yet.</div></div>`;
+    }
+
+    function renderBudgets(){
+      const month = activeMonth();
+      const items = itemsForMonth(month);
+      const t = totals(items);
+      const master = monthBudget(month);
+
+      document.getElementById("flexBudgetInput").value = master || "";
+      document.getElementById("masterFlexSummary").textContent = `${formatMoney(t.flexible)} / ${formatMoney(master)}`;
+      document.getElementById("masterFlexBar").style.width = `${Math.min(100, percent(t.flexible, Math.max(master,1)))}%`;
+      document.getElementById("masterFlexNote").textContent = master > 0 ? `${formatMoney(rolloverForMonth(month).result)} left after flexible spend and carry logic.` : `Set the master flex budget for ${prettyMonth(month)}.`;
+
+      const splitRows = getTrackedFlexRows(month);
+      const container = document.getElementById("splitBudgetRows");
+      container.innerHTML = splitRows.map(row => {
+        const usage = row.budget > 0 ? Math.min(100, percent(row.spent, row.budget)) : 0;
+        return `<div class="flex-row"><div class="flex-row-head"><div><div class="flex-row-name">${escapeHtml(row.category)}</div><div class="flex-row-meta">Spent ${formatMoney(row.spent)} • Left <span class="${row.left > 0 ? "roll-pos" : row.left < 0 ? "roll-neg" : "roll-zero"}">${formatMoney(row.left)}</span></div></div><div style="text-align:right"><div class="small muted">Budget</div><div style="font-weight:800;color:var(--blueDark)">${formatMoney(row.budget)}</div></div></div><div class="bar-wrap"><div class="bar-head"><span>Usage</span><span>${row.budget > 0 ? usage.toFixed(1) : "0.0"}%</span></div><div class="bar"><div style="width:${usage}%"></div></div></div><div class="flex-actions"><div class="budget-input-wrap"><input id="split_${row.category}" class="input" inputmode="decimal" placeholder="0.00" value="${row.budget || ""}" /></div><button class="btn btn-primary save-btn" style="height:44px;border-radius:14px" onclick="saveSplitBudget('${row.category}')">Save</button><button class="btn btn-secondary clear-btn" style="height:44px;border-radius:14px" onclick="clearSplitBudget('${row.category}')">Clear</button></div></div>`;
+      }).join("");
+
+      const allocated = splitRows.reduce((sum,row)=>sum + row.budget,0);
+      const reserve = master - allocated;
+      document.getElementById("allocatedTotal").textContent = formatMoney(allocated);
+      const reserveEl = document.getElementById("reserveLeft");
+      reserveEl.textContent = formatMoney(reserve);
+      reserveEl.className = reserve > 0 ? "metric-big roll-pos" : reserve < 0 ? "metric-big roll-neg" : "metric-big roll-zero";
+    }
+
+    function updateTitles(){
+      const titles = { home:"CD Money", add: editingExpenseId ? "Edit expense" : "Add expense", history:"History", reports:"Reports", more:"More", savings:"Savings opportunities", income:"Income & savings", rules:"Category rules", recurring:"Recurring", budgets:"Flexible budget", backup:"Backup & restore", ai:"AI insights" };
+      document.getElementById("screenTitle").textContent = titles[currentScreen] || "CD Money";
+      document.getElementById("addTitle").textContent = editingExpenseId ? "Edit expense" : "Quick add expense";
+      renderSyncState();
+    }
+
+    function renderAll(){
+      renderMonthSelects();
+      renderCategoryPicker("categoryPicker","categoryInput");
+      renderCategoryPicker("recCategoryPicker","recCategory");
+      updateCategoryTypeNotes();
+      renderHome();
+      renderHistory();
+      renderReports();
+      renderSavings();
+      renderIncomeScreen();
+      renderRules();
+      renderRecurring();
+      renderBudgets();
+      updateTitles();
+      saveState();
+    }
+
+    function showScreen(screen){
+      currentScreen = screen;
+      document.querySelectorAll(".section").forEach(el => el.classList.remove("active"));
+      document.getElementById(screen)?.classList.add("active");
+
+      document.querySelectorAll(".navbtn").forEach(btn => {
+        const target = btn.dataset.screen;
+        const active = ["savings","income","rules","recurring","budgets","backup","ai"].includes(screen) ? target === "more" : target === screen;
+        btn.classList.toggle("active", active);
+      });
+
+      if(screen === "add" && !editingExpenseId) clearExpenseForm();
+      updateTitles();
+    }
+
+    function clearExpenseForm(){
+      editingExpenseId = null;
+      document.getElementById("amountInput").value = "";
+      document.getElementById("noteInput").value = "";
+      document.getElementById("categoryInput").value = "Food";
+      renderCategoryPicker("categoryPicker","categoryInput");
+      updateCategoryTypeNotes();
+      updateTitles();
+    }
+
+    function clearRecurringForm(){
+      document.getElementById("recTitle").value = "";
+      document.getElementById("recAmount").value = "";
+      document.getElementById("recDay").value = "";
+      document.getElementById("recCategory").value = "Bills";
+      renderCategoryPicker("recCategoryPicker","recCategory");
+      updateCategoryTypeNotes();
+    }
+
+    function changeMonth(value){
+      app.selectedMonth = value;
+      saveState();
+      renderAll();
+    }
+
+    async function saveExpense(){
+      const amount = toNumber(document.getElementById("amountInput").value);
+      const category = document.getElementById("categoryInput").value;
+      const note = cleanString(document.getElementById("noteInput").value);
+
+      if(!(amount > 0)){ alert("Enter a valid amount."); return; }
+      if(!category){ alert("Choose a category."); return; }
+
+      const existing = editingExpenseId ? app.expenses.find(x => String(x.id) === String(editingExpenseId)) : null;
+      const item = { id: editingExpenseId || generateId("exp"), date: existing?.date || new Date().toISOString(), amount, category, note, source: existing?.source || "manual" };
+
+      await writeAndResync({ action:"upsertExpense", ...item }, (busy) => setButtonBusy("saveExpenseBtn", busy, editingExpenseId ? "Saving..." : "Posting...", "Save"));
+
+      editingExpenseId = null;
+      app.selectedMonth = monthKey(item.date);
+      clearExpenseForm();
+      showScreen("history");
+    }
+
+    function editExpense(id){
+      const item = app.expenses.find(x => String(x.id) === String(id));
+      if(!item) return;
+      editingExpenseId = String(id);
+      document.getElementById("amountInput").value = item.amount;
+      document.getElementById("noteInput").value = item.note || "";
+      document.getElementById("categoryInput").value = item.category;
+      renderCategoryPicker("categoryPicker","categoryInput");
+      updateCategoryTypeNotes();
+      showScreen("add");
+    }
+
+    async function deleteExpense(id){
+      if(!confirm("Are you sure you want to delete this expense?")) return;
+      await writeAndResync({ action:"deleteExpense", id:String(id) }, null);
+    }
+
+    async function saveRule(category, mode){
+      app.rules[category] = mode;
+      renderAll();
+      await writeAndResync({ action:"saveRule", category, mode }, null);
+    }
+
+    async function saveIncomeNow(){
+      const month = document.getElementById("incomeMonthSelect").value;
+      const income = toNumber(document.getElementById("incomeInput").value);
+      const flex = monthBudget(month);
+      await writeAndResync({ action:"saveMonthSettings", month, income, flex }, (busy) => setButtonBusy("saveIncomeBtn", busy, "Saving...", "Save income"));
+    }
+
+    async function saveMasterFlexBudget(){
+      const month = activeMonth();
+      const income = monthIncome(month);
+      const flex = toNumber(document.getElementById("flexBudgetInput").value);
+      await writeAndResync({ action:"saveMonthSettings", month, income, flex }, (busy) => setButtonBusy("saveFlexMasterBtn", busy, "Saving...", "Save master budget"));
+    }
+
+    async function saveRecurring(){
+      const title = cleanString(document.getElementById("recTitle").value);
+      const amount = toNumber(document.getElementById("recAmount").value);
+      const dayOfMonth = Math.floor(toNumber(document.getElementById("recDay").value));
+      const category = document.getElementById("recCategory").value;
+
+      if(!title){ alert("Enter a recurring title."); return; }
+      if(!(amount > 0)){ alert("Enter a valid recurring amount."); return; }
+      if(!(dayOfMonth >= 1 && dayOfMonth <= 31)){ alert("Day of month must be between 1 and 31."); return; }
+
+      await writeAndResync({ action:"saveRecurring", id: generateId("rec"), title, amount, category, dayOfMonth, status:"Active", lastAddedMonth:"" }, (busy) => setButtonBusy("saveRecurringBtn", busy, "Saving...", "Save recurring"));
+      clearRecurringForm();
+    }
+
+    async function deleteRecurring(id){
+      if(!confirm("Are you sure you want to delete this recurring item?")) return;
+      await writeAndResync({ action:"deleteRecurring", id:String(id) }, null);
+    }
+
+    async function runDueRecurring(){
+      const month = currentMonthKey();
+      const today = new Date().getDate();
+      const dueItems = (app.recurring || []).filter(item => {
+        const status = String(item.status || "").toLowerCase();
+        const day = Math.floor(toNumber(item.dayOfMonth));
+        return status === "active" && day > 0 && day <= today && String(item.lastAddedMonth || "") !== month;
+      });
+
+      if(!dueItems.length){
+        alert("No due recurring items right now.");
+        return;
+      }
+
+      if(writeLock) return null;
+      writeLock = true;
+      setButtonBusy("runRecurringBtn", true, "Running...", "Run now");
+
+      try{
+        setSyncState("Processing recurring...", "var(--amber)");
+
+        for(const item of dueItems){
+          const amount = toNumber(item.amount);
+          if(!(amount > 0)) continue;
+
+          await apiPost({
+            action:"upsertExpense",
+            id: generateId("exp"),
+            date: new Date().toISOString(),
+            amount,
+            category: item.category || "Bills",
+            note: cleanString(item.title || item.note || "Recurring"),
+            source:"recurring"
+          });
+
+          await apiPost({
+            action:"saveRecurring",
+            id: String(item.id),
+            title: cleanString(item.title || "Recurring"),
+            amount,
+            category: item.category || "Bills",
+            dayOfMonth: Math.floor(toNumber(item.dayOfMonth)),
+            status: item.status || "Active",
+            lastAddedMonth: month
+          });
+        }
+
+        await syncFromCloud();
+        showScreen("history");
+      }catch(err){
+        console.error(err);
+        setSyncState("Recurring failed", "var(--red)");
+        alert(err.message || "Recurring processing failed.");
+      }finally{
+        writeLock = false;
+        setButtonBusy("runRecurringBtn", false, "Running...", "Run now");
+      }
+    }
+
+    async function saveSplitBudget(category){
+      const month = activeMonth();
+      const amount = toNumber(document.getElementById(`split_${category}`).value);
+      await writeAndResync({ action:"saveFlexBudget", month, category, budget: amount }, null);
+    }
+
+    async function clearSplitBudget(category){
+      const month = activeMonth();
+      await writeAndResync({ action:"deleteFlexBudget", month, category }, null);
+    }
+
+    function exportBackup(){
+      const payload = { exportedAt: new Date().toISOString(), appName: "CD Money", version: 30, data: app };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `cd-money-backup-${new Date().toISOString().slice(0,19).replace(/[:T]/g,"-")}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importBackup(){
+      const file = document.getElementById("backupFileInput").files?.[0];
+      if(!file){ alert("Choose a backup file first."); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const parsed = JSON.parse(reader.result);
+          const restored = normalizeState(parsed.data || parsed);
+          app = restored;
+          saveState();
+          renderAll();
+          alert("Backup imported locally.");
+        }catch(err){
+          alert("That file is not a valid CD Money backup.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function renderAIInsights(){
+      const month = activeMonth();
+      const items = itemsForMonth(month);
+      const box = document.getElementById("aiInsights");
+
+      if(!items.length){
+        box.innerHTML = `<div class="empty">Add some expenses first.</div>`;
+        return;
+      }
+
+      const t = totals(items);
+      const roll = rolloverForMonth(month);
+      const income = monthIncome(month);
+      const topCategories = categoryTotals(items).filter(x => !isFixed(x.name)).slice(0,6).map(x => ({
+        name:x.name,
+        total:toNumber(x.value),
+        spendSharePct: t.total > 0 ? Number(percent(x.value, t.total).toFixed(1)) : 0,
+        incomeSharePct: income > 0 ? Number(percent(x.value, income).toFixed(1)) : null
+      }));
+      const noteRows = noteInsightRows(items);
+      const topItems = noteRows.slice(0,10);
+      const repeatedItems = noteRows.filter(x => x.count >= 2).slice(0,10);
+      const splitRows = getTrackedFlexRows(month);
+
+      const categoryBudgets = {};
+      TRACKED_FLEX_CATEGORIES.forEach(category => {
+        const row = splitRows.find(x => x.category === category);
+        categoryBudgets[category] = {
+          budget: row?.budget || 0,
+          spent: row?.spent || 0,
+          left: row?.left || 0
+        };
+      });
+
+      const reserveLeft = monthBudget(month) - TRACKED_FLEX_CATEGORIES.reduce((sum,cat)=>sum + flexCategoryBudget(month,cat),0);
+      const safeDailySpend = remainingDaysInMonth(month) > 0 ? roll.result / remainingDaysInMonth(month) : 0;
+      const recentNotes = [...items]
+        .sort((a,b) => new Date(b.date) - new Date(a.date))
+        .slice(0,12)
+        .map(x => ({
+          date: String(x.date).slice(0,10),
+          note: cleanString(x.note || x.category),
+          category: x.category,
+          amount: toNumber(x.amount),
+          fixed: isFixed(x.category)
+        }));
+
+      const localBlocks = [];
+      if(topItems.length){
+        localBlocks.push(`<div class="ai-bubble"><b>Top note-level spend</b><br>${topItems.slice(0,6).map(x => `${escapeHtml(x.note)} — ${formatMoney(x.total)} across ${x.count} purchase${x.count === 1 ? "" : "s"} (${escapeHtml(x.category)})`).join("<br>")}</div>`);
+      }
+      if(repeatedItems.length){
+        localBlocks.push(`<div class="ai-bubble"><b>Repeated notes</b><br>${repeatedItems.slice(0,6).map(x => `${escapeHtml(x.note)} — ${x.count} times • ${formatMoney(x.total)}`).join("<br>")}</div>`);
+      }
+
+      box.innerHTML = localBlocks.join("") + `<div class="ai-bubble">Analyzing with Gemini...</div>`;
+
+      try{
+        const result = await apiPost({
+          action:"getGeminiInsights",
+          month,
+          summary:{
+            totalSpend: t.total,
+            fixedSpend: t.fixed,
+            flexibleSpend: t.flexible,
+            flexibleLeft: roll.result,
+            availableFlexible: roll.available,
+            income,
+            safeDailySpend,
+            averageFlexibleSoFar: Number((t.flexible / Math.max(elapsedDaysForMonth(month), 1)).toFixed(2))
+          },
+          topCategories,
+          topItems,
+          repeatedItems,
+          recentNotes,
+          categoryBudgets,
+          reserveLeft,
+          safeDailySpend
+        });
+
+        const insights = result.insights;
+        if(!insights){
+          box.innerHTML = localBlocks.join("") + `<div class="empty">AI insights could not be loaded.</div>`;
+          return;
+        }
+
+        const sections = [];
+        if(insights.headline){ sections.push(`<div class="ai-bubble"><b>${escapeHtml(insights.headline)}</b></div>`); }
+        (insights.top_drains || []).forEach(x => sections.push(`<div class="ai-bubble">${escapeHtml(x)}</div>`));
+        (insights.repeated_spend || []).forEach(x => sections.push(`<div class="ai-bubble">${escapeHtml(x)}</div>`));
+        (insights.budget_pressure || []).forEach(x => sections.push(`<div class="ai-bubble">${escapeHtml(x)}</div>`));
+        (insights.actions || []).forEach(x => sections.push(`<div class="ai-bubble"><b>Action:</b> ${escapeHtml(x)}</div>`));
+
+        box.innerHTML = localBlocks.join("") + (sections.length ? sections.join("") : `<div class="empty">No AI insights returned.</div>`);
+      }catch(err){
+        console.error(err);
+        box.innerHTML = localBlocks.join("") + `<div class="empty">AI insights failed to load.</div>`;
+      }
+    }
+
+    renderAll();
+    renderSyncState();
+    syncFromCloud();
+  </script>
+</body>
+</html>

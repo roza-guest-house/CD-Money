@@ -1,0 +1,12 @@
+{
+  "name": "CD Money",
+  "short_name": "CD Money",
+  "description": "CD Money personal finance app",
+  "display": "standalone",
+  "start_url": "./index.html",
+  "scope": "./",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "orientation": "portrait",
+  "lang": "en-GB"
+}

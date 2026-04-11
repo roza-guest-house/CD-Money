@@ -998,11 +998,14 @@
       const t = totals(items);
       const roll = rolloverForMonth(month);
       const elapsed = Math.max(elapsedDaysForMonth(month), 1);
-      const avgSoFar = t.flexible / elapsed;
-      const remaining = remainingDaysInMonth(month);
-      const dailyLeft = remaining > 0 ? roll.result / remaining : 0;
-      const totalDays = totalDaysInMonth(month);
-      const projectedFlex = avgSoFar * totalDays;
+const remaining = remainingDaysInMonth(month);
+const totalDays = totalDaysInMonth(month);
+
+const avgSoFar = t.flexible / elapsed;
+const dailyLeft = remaining > 0 ? roll.result / remaining : 0;
+
+const futureDaysAfterToday = Math.max(remaining - 1, 0);
+const projectedFlex = t.flexible + (avgSoFar * futureDaysAfterToday);
       const projectedDelta = projectedFlex - monthBudget(month);
       const masterFlex = monthBudget(month);
       const splitRows = getTrackedFlexRows(month);

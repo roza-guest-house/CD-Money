@@ -997,7 +997,7 @@
         .sort((a,b)=>new Date(b.date)-new Date(a.date));
       const t = totals(items);
       const roll = rolloverForMonth(month);
-      const elapsed = Math.max(elapsedDaysForMonth(month), 1);
+     const elapsed = Math.max(elapsedDaysForMonth(month), 1);
 const remaining = remainingDaysInMonth(month);
 const totalDays = totalDaysInMonth(month);
 
@@ -1005,9 +1005,12 @@ const todayFlex = flexibleSpentToday(month);
 const closedDays = Math.max(elapsed - 1, 0);
 const closedFlexibleSpend = Math.max(t.flexible - todayFlex, 0);
 
-const dailyLeft = remaining > 0 ? roll.result / remaining : 0;
+// Freeze daily-left for the whole day by excluding today's spend
+const closedRollResult = (roll.incomingCarry + monthBudget(month)) - closedFlexibleSpend;
+
+const dailyLeft = remaining > 0 ? closedRollResult / remaining : 0;
 const avgSoFar = closedDays > 0 ? closedFlexibleSpend / closedDays : 0;
-const projectedFlex = t.flexible + (avgSoFar * Math.max(remaining - 1, 0));
+const projectedFlex = closedFlexibleSpend + (avgSoFar * remaining);
       const projectedDelta = projectedFlex - monthBudget(month);
       const masterFlex = monthBudget(month);
       const splitRows = getTrackedFlexRows(month);

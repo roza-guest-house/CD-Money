@@ -1044,7 +1044,7 @@ const projectedFlex = closedFlexibleSpend + (avgSoFar * remaining);
       document.getElementById("flexTotalNote").textContent = `This month flexible spend`;
       document.getElementById("flexAvgLabel").textContent = "Average so far";
       document.getElementById("flexAvgSoFar").textContent = formatMoney(avgSoFar);
-      document.getElementById("flexAvgSoFarNote").textContent = `Based on ${elapsed} elapsed day${elapsed === 1 ? "" : "s"}`;
+      document.getElementById("flexAvgSoFarNote").textContent = `Based on ${closedDays} completed day${closedDays === 1 ? "" : "s"}`;
       document.getElementById("dailyLeft").textContent = formatMoney(dailyLeft);
       document.getElementById("dailyLeftNote").textContent = remaining > 0 ? `Based on ${remaining} day${remaining === 1 ? "" : "s"} remaining` : "No days remaining in this month";
       document.getElementById("projectedMonthEnd").textContent = formatMoney(projectedFlex);

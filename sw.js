@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cd-money-v2-shell-v2';
+const CACHE_NAME = 'cd-money-v2-shell-v3';
 const APP_SHELL = [
   './',
   './index.html',

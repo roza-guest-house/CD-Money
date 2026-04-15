@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+      <stop offset="0%" stop-color="#0f2044"/>
+      <stop offset="100%" stop-color="#020810"/>
+    </radialGradient>
+    <radialGradient id="rimhl" cx="38%" cy="28%" r="70%">
+      <stop offset="0%" stop-color="#fff8c0"/>
+      <stop offset="18%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#c98c00"/>
+      <stop offset="100%" stop-color="#7a5200"/>
+    </radialGradient>
+    <linearGradient id="rimband" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe87a"/>
+      <stop offset="22%" stop-color="#ffd700"/>
+      <stop offset="58%" stop-color="#b87800"/>
+      <stop offset="100%" stop-color="#6b4400"/>
+    </linearGradient>
+    <linearGradient id="rimedge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a06a00"/>
+      <stop offset="55%" stop-color="#4a2e00"/>
+      <stop offset="100%" stop-color="#1a0e00"/>
+    </linearGradient>
+    <radialGradient id="face" cx="40%" cy="34%" r="68%">
+      <stop offset="0%" stop-color="#3160e0"/>
+      <stop offset="42%" stop-color="#1c3eb8"/>
+      <stop offset="75%" stop-color="#102080"/>
+      <stop offset="100%" stop-color="#08104a"/>
+    </radialGradient>
+    <radialGradient id="gloss" cx="37%" cy="26%" r="46%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.30"/>
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="hotspot" cx="33%" cy="24%" r="22%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.52"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="letters" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#ddeeff"/>
+      <stop offset="100%" stop-color="#92b8f0"/>
+    </linearGradient>
+    <linearGradient id="goldtext" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff0a0"/>
+      <stop offset="50%" stop-color="#ffd700"/>
+      <stop offset="100%" stop-color="#c89000"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <ellipse cx="256" cy="430" rx="168" ry="20" fill="#000" opacity="0.45"/>
+  <ellipse cx="256" cy="296" rx="172" ry="172" fill="#2a1800"/>
+  <ellipse cx="256" cy="288" rx="172" ry="172" fill="url(#rimedge)"/>
+  <ellipse cx="256" cy="278" rx="172" ry="172" fill="url(#rimband)"/>
+  <ellipse cx="256" cy="272" rx="172" ry="172" fill="url(#rimhl)"/>
+  <ellipse cx="256" cy="264" rx="158" ry="158" fill="url(#face)"/>
+  <ellipse cx="256" cy="272" rx="170" ry="170" fill="none" stroke="#ffe066" stroke-width="1.0" opacity="0.4"/>
+  <ellipse cx="256" cy="272" rx="164" ry="164" fill="none" stroke="#c88800" stroke-width="0.7" opacity="0.45"/>
+  <text x="256" y="296" text-anchor="middle" dominant-baseline="central"
+    font-family="Arial Black, Impact, sans-serif"
+    font-size="108" font-weight="900" letter-spacing="-2"
+    fill="url(#letters)">ACD</text>
+  <ellipse cx="256" cy="264" rx="158" ry="158" fill="url(#gloss)"/>
+  <ellipse cx="228" cy="218" rx="64" ry="38" fill="url(#hotspot)"/>
+  <ellipse cx="256" cy="264" rx="156" ry="156" fill="none" stroke="#ffffff" stroke-width="0.7" opacity="0.1"/>
+  <text x="256" y="444" text-anchor="middle"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="34" font-weight="700" letter-spacing="5"
+    fill="url(#goldtext)">MONEY</text>
+</svg>
